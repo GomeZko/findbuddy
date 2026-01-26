@@ -152,7 +152,7 @@ public class ConsoleApp implements CommandLineRunner {
         var matches = searchService.findPeopleByInterest(currentUserId, interest);
 
         if (matches.isEmpty()) {
-            System.out.println("No matches found 😢");
+            System.out.println("No matches found");
             return;
         }
 
@@ -169,7 +169,7 @@ public class ConsoleApp implements CommandLineRunner {
         var results = searchService.findPeopleByMultipleInterests(currentUserId, input);
 
         if (results.isEmpty()) {
-            System.out.println("No matches found 😢");
+            System.out.println("No matches found");
             return;
         }
 
@@ -254,7 +254,7 @@ public class ConsoleApp implements CommandLineRunner {
             );
 
             if (matches.isEmpty()) {
-                System.out.println("No matches found 😢");
+                System.out.println("No matches found");
                 return;
             }
 
