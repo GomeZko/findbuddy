@@ -249,23 +249,33 @@ public class ConsoleApp implements CommandLineRunner {
                 return;
             }
 
-            var matches = searchService.findPeopleByInterestAndAvailability(
-                    currentUserId, interest, day, from, to
-            );
+            var slots = searchService.findAvailabilityMatches(currentUserId, interest, day, from, to);
 
-            if (matches.isEmpty()) {
+            if (slots.isEmpty()) {
                 System.out.println("No matches found");
                 return;
             }
 
             System.out.println("\nMatches:");
-            for (var u : matches) {
-                System.out.println("- " + u.getUsername() + " (" + u.getCity() + ")");
+            for (var s : slots) {
+
+                // overlap start = max(requestFrom, userFrom)
+                LocalTime overlapFrom = from.isAfter(s.getTimeFrom()) ? from : s.getTimeFrom();
+
+                // overlap end = min(requestTo, userTo)
+                LocalTime overlapTo = to.isBefore(s.getTimeTo()) ? to : s.getTimeTo();
+
+                System.out.println("- " + s.getUser().getUsername() +
+                        " (" + s.getUser().getCity() + ") Common free time: " +
+                        s.getDay() + " " + overlapFrom + " - " + overlapTo +
+                        " | User availability: " + s.getTimeFrom() + " - " + s.getTimeTo());
             }
+
         } catch (Exception e) {
             System.out.println("Invalid input.");
         }
     }
+
 
     private void logout() {
         currentUserId = null;
