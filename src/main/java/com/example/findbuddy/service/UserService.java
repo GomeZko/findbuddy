@@ -17,7 +17,7 @@ public class UserService {
     @Transactional
     public User getUserWithInterests(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        user.getInterests().size(); // принудительно загрузить interests
+        user.getInterests().size();
         return user;
     }
 }

@@ -2,8 +2,6 @@ package com.example.findbuddy.model;
 
 
 import jakarta.persistence.*;
-import com.example.findbuddy.model.User;
-
 import java.util.Set;
 import java.util.HashSet;
 
