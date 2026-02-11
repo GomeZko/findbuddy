@@ -1,13 +1,13 @@
 package com.example.findbuddy.controller;
-
-
-
 import com.example.findbuddy.model.User;
-import com.example.findbuddy.service.DTO.UpdateUserRequest;
-import com.example.findbuddy.service.DTO.UserResponse;
+import com.example.findbuddy.service.DTO.*;
 import com.example.findbuddy.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 import java.util.stream.Collectors;
 
@@ -22,40 +22,81 @@ public class UserController {
         this.userService = userService;
     }
 
+    // =============================
+    // GET PROFILE (from JWT)
+    // =============================
     @GetMapping("/profile")
     public UserResponse getProfile(Authentication authentication) {
+
+        if (authentication == null || authentication.getName() == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
         String username = authentication.getName();
         User user = userService.findByUsername(username);
 
+        return mapToResponse(user);
+    }
+
+    // =============================
+    // UPDATE PROFILE
+    // =============================
+    @PutMapping("/profile")
+    public UserResponse updateProfile(@RequestBody UpdateUserRequest request,
+                                      Authentication authentication) {
+
+        if (authentication == null || authentication.getName() == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        String username = authentication.getName();
+        User updatedUser = userService.updateUser(username, request);
+
+        return mapToResponse(updatedUser);
+    }
+
+    // =============================
+    // PRIVATE MAPPER METHOD
+    // =============================
+    private UserResponse mapToResponse(User user) {
         return new UserResponse(
                 user.getId(),
                 user.getUsername(),
                 user.getCity(),
                 user.getInterests()
                         .stream()
-                        .map(interest -> interest.getName())
-                        .collect(Collectors.toList())
-
-
-        );
-    }
-
-    //Update user
-    @PutMapping("/profile")
-    public UserResponse updateProfile(@RequestBody UpdateUserRequest request,
-                                      Authentication authentication) {
-        String username = authentication.getName();
-        User updatedUser = userService.updateUser(username, request);
-
-        return new UserResponse(
-                updatedUser.getId(),
-                updatedUser.getUsername(),
-                updatedUser.getCity(),
-                updatedUser.getInterests()
+                        .map(i -> i.getName())
+                        .collect(Collectors.toSet()),
+                user.getAvailability()
                         .stream()
-                        .map(interest -> interest.getName())
+                        .map(a -> a.getDay() + " " + a.getTimeFrom() + " " + a.getTimeTo())
                         .toList()
         );
     }
 
+    @PostMapping("/interests")
+    public UserResponse addInterest(@RequestBody AddInterestRequest request,
+                                    Authentication authentication) {
+        String username =  authentication.getName();
+
+        User updatedUser = userService.addInterest(username, request.interests());
+
+        return mapToResponse(updatedUser);
+    }
+
+    @PostMapping("/availability")
+    public UserResponse addAvailability(@RequestBody AddAvailabilityRequest request,
+                                    Authentication authentication) {
+        String username =  authentication.getName();
+        User updatedUser = userService.addAvailability(username, request);
+
+        return mapToResponse(updatedUser);
+    }
+
+    @PostMapping("/search")
+    public List<MatchResult> search(@RequestBody SearchRequest request, Authentication authentication) {
+        String username = authentication.getName();
+
+        return userService.findMatches(username, request.interests());
+    }
 }

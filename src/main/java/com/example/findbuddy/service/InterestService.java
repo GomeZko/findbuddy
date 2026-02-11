@@ -27,7 +27,7 @@ public class InterestService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
 
-        Interest interest = interestRepository.findByName(interestName)
+        Interest interest = interestRepository.findByNameIgnoreCase(interestName)
                 .orElseGet(() -> {
                     Interest i = new Interest();
                     i.setName(interestName);

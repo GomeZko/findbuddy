@@ -56,4 +56,21 @@ public class Availability {
     public User getUser() {
         return user;
     }
+
+    public void setDay(DayOfWeek day) {
+        this.day = day;
+    }
+
+    public void setTimeFrom(LocalTime timeFrom) {
+        this.timeFrom = timeFrom;
+    }
+
+    public void setTimeTo(LocalTime timeTo) {
+        this.timeTo = timeTo;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }
