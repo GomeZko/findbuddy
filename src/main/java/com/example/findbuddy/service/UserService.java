@@ -1,6 +1,7 @@
 package com.example.findbuddy.service;
 
 
+import com.example.findbuddy.exception.UserNotFoundException;
 import com.example.findbuddy.model.Availability;
 import com.example.findbuddy.model.Interest;
 import com.example.findbuddy.model.User;
@@ -37,12 +38,12 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     public User updateUser(String username, UpdateUserRequest request) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new UserNotFoundException(username));
 
         if(request.getCity() != null) {
             user.setCity(request.getCity());
@@ -76,7 +77,7 @@ public class UserService {
     @Transactional
     public User addInterest(String username, List<String> interestNames) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new UserNotFoundException(username));
 
         if(interestNames == null || interestNames.isEmpty()) {
             throw new RuntimeException("Interests list is empty");
@@ -98,7 +99,7 @@ public class UserService {
     public User addAvailability(String username, AddAvailabilityRequest request) {
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(username));
 
         Availability availability = new Availability();
         availability.setDay(request.day());
@@ -113,7 +114,7 @@ public class UserService {
 
     public List<MatchResult> findMatches(String currentUsername, List<String> interestNames) {
         User currentUser = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(currentUsername));
 
         List<User> allUsers = userRepository.findAll();
 

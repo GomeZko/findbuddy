@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
@@ -25,10 +26,10 @@ public class AvailabilityController {
     }
 
     @PostMapping("/add")
-    public String addAvailability(@Valid @RequestBody AvailabilityRequest request) {
+    public String addAvailability(@Valid @RequestBody AvailabilityRequest request, Authentication authentication) {
 
         availabilityService.addAvailability(
-                request.userId(),
+                authentication.getName(),
                 DayOfWeek.of(request.day()),
                 LocalTime.parse(request.from()),
                 LocalTime.parse(request.to())
@@ -43,8 +44,6 @@ public class AvailabilityController {
     }
 
     public record AvailabilityRequest(
-            Long userId,
-
             @Min(value = 1, message = "Day must be between 1 and 7")
             @Max(value = 7, message = "Day must be between 1 and 7")
             int day,

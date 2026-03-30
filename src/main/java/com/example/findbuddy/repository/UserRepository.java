@@ -16,6 +16,7 @@ import java.time.LocalTime;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
+    Optional<User> findByRefreshToken(String refreshToken);
 
     @Query("""
         SELECT DISTINCT u

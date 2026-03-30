@@ -1,5 +1,6 @@
 package com.example.findbuddy.service;
 
+import com.example.findbuddy.exception.UserNotFoundException;
 import com.example.findbuddy.model.Interest;
 import com.example.findbuddy.model.User;
 import com.example.findbuddy.repository.InterestRepository;
@@ -20,11 +21,10 @@ public class InterestService {
     }
 
     @Transactional
-    public void addInterestToUser(Long userId, String interestName) {
+    public void addInterestToUser(String username, String interestName) {
 
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
 
 
         Interest interest = interestRepository.findByNameIgnoreCase(interestName)

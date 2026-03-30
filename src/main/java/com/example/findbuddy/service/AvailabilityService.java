@@ -1,5 +1,6 @@
 package com.example.findbuddy.service;
 
+import com.example.findbuddy.exception.UserNotFoundException;
 import com.example.findbuddy.model.Availability;
 import com.example.findbuddy.repository.AvailabilityRepository;
 import com.example.findbuddy.repository.UserRepository;
@@ -22,9 +23,9 @@ public class AvailabilityService {
     }
 
     @Transactional
-    public void addAvailability(Long userId, DayOfWeek day, LocalTime from, LocalTime to) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public void addAvailability(String username, DayOfWeek day, LocalTime from, LocalTime to) {
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
 
         Availability slot = new Availability(user, day, from, to);
         availabilityRepository.save(slot);

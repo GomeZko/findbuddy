@@ -1,6 +1,7 @@
 package com.example.findbuddy.controller;
 
 import com.example.findbuddy.service.InterestService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,10 +16,10 @@ public class InterestController {
     }
 
     @PostMapping("/add")
-    public String addInterest(@RequestBody InterestRequest request) {
-        interestService.addInterestToUser(request.userId(), request.interest());
+    public String addInterest(@RequestBody InterestRequest request, Authentication authentication) {
+        interestService.addInterestToUser(authentication.getName(), request.interest());
         return "Interest added";
     }
 
-    public record InterestRequest(Long userId, String interest) {}
+    public record InterestRequest(String interest) {}
 }

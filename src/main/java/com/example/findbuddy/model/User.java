@@ -56,6 +56,12 @@ public class User {
 
 
 
+    @Column(unique = true)
+    private String refreshToken;
+
+    public String getRefreshToken() { return refreshToken; }
+    public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
+
     @ManyToMany
     @JoinTable(name = "user_interests",
             joinColumns = @JoinColumn(name = "user_id"),
