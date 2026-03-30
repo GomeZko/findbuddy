@@ -55,7 +55,7 @@ public class SearchService {
 
                     int percent = (int) Math.round((matches * 100.0) / total);
 
-                    return new MatchResult(username, city, matches, percent);
+                    return new MatchResult(username, city, percent);
                 })
                 .toList();
     }

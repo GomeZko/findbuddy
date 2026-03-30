@@ -129,14 +129,13 @@ public class UserService {
                     int percent = (int)((matches * 100) / interestNames.size());
 
                     return new MatchResult(
-                            user.getId(),
                             user.getUsername(),
                             user.getCity(),
                             percent
                     );
                 })
-                .filter(result -> result.matchPercent() > 0)
-                .sorted((a, b) -> b.matchPercent() - a.matchPercent())
+                .filter(result -> result.getMatchPercent() > 0)
+                .sorted((a, b) -> b.getMatchPercent() - a.getMatchPercent())
                 .toList();
     }
 

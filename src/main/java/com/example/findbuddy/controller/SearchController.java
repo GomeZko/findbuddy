@@ -1,49 +1,49 @@
 package com.example.findbuddy.controller;
 
-
-import com.example.findbuddy.model.Availability;
 import com.example.findbuddy.model.User;
 import com.example.findbuddy.service.SearchService;
+import com.example.findbuddy.service.UserService;
+import com.example.findbuddy.service.DTO.MatchResult;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/search")
-@CrossOrigin
 public class SearchController {
+
     private final SearchService searchService;
+    private final UserService userService;
 
-    public SearchController(SearchService searchService){
+    public SearchController(SearchService searchService, UserService userService) {
         this.searchService = searchService;
+        this.userService = userService;
     }
 
-    //Searching by interest
     @GetMapping("/interest")
-    public List<User> findByInterest(@RequestParam Long currentUserId, @RequestParam String interest)  {
-        return searchService.findPeopleByInterest(currentUserId, interest);
+    public List<User> searchByInterest(
+            @RequestParam String interest,
+            Authentication auth
+    ) {
+
+        String username = auth.getName();
+
+        User user = userService.findByUsername(username);
+
+        return searchService.findPeopleByInterest(user.getId(), interest);
     }
 
-    //Interest + availability
-    @GetMapping("/availability")
-    public List<Availability> findByInterestAndAvailability(
-            @RequestParam Long currentUserId,
-            @RequestParam String interest,
-            @RequestParam int day,
-            @RequestParam String from,
-            @RequestParam String to) {
-        DayOfWeek dayOfWeek = DayOfWeek.of(day);
-        LocalTime fromTime = LocalTime.parse(from);
-        LocalTime toTime = LocalTime.parse(to);
+    @GetMapping("/match")
+    public List<MatchResult> searchByMultipleInterests(
+            @RequestParam String interests,
+            Authentication auth
+    ) {
 
-        return  searchService.findAvailabilityMatches(
-                currentUserId,
-                interest,
-                dayOfWeek,
-                fromTime,
-                toTime
-        );
+        String username = auth.getName();
+
+        User user = userService.findByUsername(username);
+
+        return searchService.findPeopleByMultipleInterests(user.getId(), interests);
     }
 }

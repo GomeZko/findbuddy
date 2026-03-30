@@ -2,6 +2,7 @@ package com.example.findbuddy.controller;
 import com.example.findbuddy.model.User;
 import com.example.findbuddy.service.DTO.*;
 import com.example.findbuddy.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class UserController {
     // UPDATE PROFILE
     // =============================
     @PutMapping("/profile")
-    public UserResponse updateProfile(@RequestBody UpdateUserRequest request,
+    public UserResponse updateProfile(@Valid @RequestBody UpdateUserRequest request,
                                       Authentication authentication) {
 
         if (authentication == null || authentication.getName() == null) {
@@ -75,7 +76,7 @@ public class UserController {
     }
 
     @PostMapping("/interests")
-    public UserResponse addInterest(@RequestBody AddInterestRequest request,
+    public UserResponse addInterest(@Valid @RequestBody AddInterestRequest request,
                                     Authentication authentication) {
         String username =  authentication.getName();
 
@@ -85,7 +86,7 @@ public class UserController {
     }
 
     @PostMapping("/availability")
-    public UserResponse addAvailability(@RequestBody AddAvailabilityRequest request,
+    public UserResponse addAvailability(@Valid @RequestBody AddAvailabilityRequest request,
                                     Authentication authentication) {
         String username =  authentication.getName();
         User updatedUser = userService.addAvailability(username, request);
@@ -94,9 +95,9 @@ public class UserController {
     }
 
     @PostMapping("/search")
-    public List<MatchResult> search(@RequestBody SearchRequest request, Authentication authentication) {
+    public List<MatchResult> search(@Valid @RequestBody SearchRequest request, Authentication authentication) {
         String username = authentication.getName();
 
-        return userService.findMatches(username, request.interests());
+        return userService.findMatches(username, request.getInterests());
     }
 }
