@@ -4,6 +4,8 @@ import com.example.findbuddy.service.InterestService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/interests")
 @CrossOrigin
@@ -13,6 +15,11 @@ public class InterestController {
 
     public InterestController(InterestService interestService) {
         this.interestService = interestService;
+    }
+
+    @GetMapping
+    public List<String> getAllInterests() {
+        return interestService.getAllInterests();
     }
 
     @PostMapping("/add")

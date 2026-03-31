@@ -62,6 +62,16 @@ public class User {
     public String getRefreshToken() { return refreshToken; }
     public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
 
+    @Column
+    private String bio;
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
     @ManyToMany
     @JoinTable(name = "user_interests",
             joinColumns = @JoinColumn(name = "user_id"),

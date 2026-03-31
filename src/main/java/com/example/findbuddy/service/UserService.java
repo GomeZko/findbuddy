@@ -49,6 +49,10 @@ public class UserService {
             user.setCity(request.getCity());
         }
 
+        if (request.getBio() != null) {
+            user.setBio(request.getBio());
+        }
+
         return userRepository.save(user);
     }
 
@@ -69,6 +73,7 @@ public class UserService {
                 user.getId(),
                 user.getUsername(),
                 user.getCity(),
+                user.getBio(),
                 interests,
                 availability
         );
@@ -96,6 +101,24 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
+    public void removeInterest(String username, Long interestId) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        user.getInterests().removeIf(i -> i.getId().equals(interestId));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeAvailability(String username, Long availabilityId) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        user.getAvailability().removeIf(a -> a.getId().equals(availabilityId));
+        userRepository.save(user);
+    }
+
     public User addAvailability(String username, AddAvailabilityRequest request) {
 
         User user = userRepository.findByUsername(username)
@@ -110,6 +133,15 @@ public class UserService {
         user.getAvailability().add(availability);
 
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        user.getInterests().clear();
+        userRepository.delete(user);
     }
 
     public List<MatchResult> findMatches(String currentUsername, List<String> interestNames) {

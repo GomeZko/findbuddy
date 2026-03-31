@@ -8,6 +8,8 @@ import com.example.findbuddy.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class InterestService {
 
@@ -18,6 +20,14 @@ public class InterestService {
                            InterestRepository interestRepository) {
         this.userRepository = userRepository;
         this.interestRepository = interestRepository;
+    }
+
+    public List<String> getAllInterests() {
+        return interestRepository.findAll()
+                .stream()
+                .map(Interest::getName)
+                .sorted()
+                .toList();
     }
 
     @Transactional

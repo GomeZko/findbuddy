@@ -3,13 +3,11 @@ import com.example.findbuddy.model.User;
 import com.example.findbuddy.service.DTO.*;
 import com.example.findbuddy.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-
 import java.util.stream.Collectors;
 
 @RestController
@@ -64,6 +62,7 @@ public class UserController {
                 user.getId(),
                 user.getUsername(),
                 user.getCity(),
+                user.getBio(),
                 user.getInterests()
                         .stream()
                         .map(i -> i.getName())
@@ -99,5 +98,23 @@ public class UserController {
         String username = authentication.getName();
 
         return userService.findMatches(username, request.getInterests());
+    }
+
+    @DeleteMapping("/profile")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProfile(Authentication authentication) {
+        userService.deleteUser(authentication.getName());
+    }
+
+    @DeleteMapping("/interests/{interestId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeInterest(@PathVariable Long interestId, Authentication authentication) {
+        userService.removeInterest(authentication.getName(),interestId);
+    }
+
+    @DeleteMapping("/availability/{availabilityId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeAvailability(@PathVariable Long availabilityId, Authentication authentication) {
+        userService.removeAvailability(authentication.getName(), availabilityId);
     }
 }

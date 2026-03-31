@@ -5,6 +5,7 @@ import com.example.findbuddy.model.User;
 import com.example.findbuddy.repository.AvailabilityRepository;
 import com.example.findbuddy.repository.UserRepository;
 import com.example.findbuddy.service.DTO.MatchResult;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -26,8 +27,9 @@ public class SearchService {
     }
 
 
-    public List<User> findPeopleByInterest(Long currentUserId, String interestName) {
-        return userRepository.findUsersByInterest(interestName, currentUserId);
+    public List<User> findPeopleByInterest(Long currentUserId, String interestName, int page, int size) {
+        return userRepository.findUsersByInterest(interestName, currentUserId, PageRequest.of(page, size))
+                .getContent();
     }
 
     public List<MatchResult> findPeopleByMultipleInterests(Long currentUserId, String input) {

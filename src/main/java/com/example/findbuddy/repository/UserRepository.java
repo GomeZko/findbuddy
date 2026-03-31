@@ -2,6 +2,8 @@ package com.example.findbuddy.repository;
 
 
 import com.example.findbuddy.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,9 +27,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
         WHERE i.name = :interestName
         AND u.id <> :currentUserId
         """)
+    Page<User> findUsersByInterest(@Param("interestName") String interestName,
+                                   @Param("currentUserId") Long currentUserId,
+                                   Pageable pageable);
 
-    List<User> findUsersByInterest(@Param("interestName") String interestName,
-                                   @Param("currentUserId") Long currentUserId);
 
     @Query("""
         SELECT u.username, u.city, COUNT(i.id)
